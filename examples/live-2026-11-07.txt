@@ -1,0 +1,290 @@
+# trxmix 0.1.0 live run, 2026-11-07 (21:12-21:20 UTC), real Nym mainnet mixnet
+# nym-socks5-client 1.1.86 (official release binary, build 2026-10-01), SOCKS5 127.0.0.1:1090, reply SURBs on.
+# Every request below left through the Nym exit gateway picked by `trxmix nym setup` (node 2264, TR); no clearnet
+# fallback exists. Wall times include a fresh mixnet stream, DoH over the mixnet, TLS and the genesis check.
+# Edits: the client's log path is shortened to $XDG_STATE_HOME, and `bash -c` wrappers around curl pipelines are
+# dropped. Section 1 is the setup of this client identity earlier the same day (17:37 UTC); it was restarted with
+# `trxmix nym start` for this run.
+
+
+## 1. Mixnet client
+
+$ trxmix nym setup
+exit gateway: node 2264 (TR) perf=0.98 version=1.43.0, picked at random from 100
+initialised "trxmix" -> 33ChAyRf35cDosrcyTXTySUaaLXhNHu6bcEinBLfVikj.FpvpDVRCss9XB2jSVFJA1JNfyeavqCXKSjy8PZwYaG1r@HBhdKYaPmzBG6SNLnn1JJFaWLG9DCLugKPhv8WM6T4cN
+id                 trxmix
+pid                1874189
+socks5             127.0.0.1:1090
+provider           33ChAyRf35cDosrcyTXTySUaaLXhNHu6bcEinBLfVikj.FpvpDVRCss9XB2jSVFJA1JNfyeavqCXKSjy8PZwYaG1r@HBhdKYaPmzBG6SNLnn1JJFaWLG9DCLugKPhv8WM6T4cN
+anonymous_replies  true
+client_address     Cxu6grnqVtfi4Twog3bSDRaBLHiUmQSrBhZGqEMnyoUB.9kZ82eSuUVwieiV2jQR8aX3pZyGSTuwLQ68R6UjhhxUr@H7AgrYp668hQbLEz3s7TZK1MbhD5qCW49nYJMzD7LNNR
+gateway            H7AgrYp668hQbLEz3s7TZK1MbhD5qCW49nYJMzD7LNNR
+log                $XDG_STATE_HOME/trxmix/trxmix.log
+
+
+## 2. What the upstreams see, and the CLI over the mixnet (mainnet, Nile, Shasta)
+
+$ trxmix ip
+https://api.ipify.org sees this request coming from 193.187.132.28 (3.86s over the mixnet)
+= Nym node 2264 (TR, exit gateway: true) in the nym-api node list
+(exit 0, wall 4.2s)
+
+$ trxmix networks
+NETWORK  GENESIS BLOCK ID             GATEWAY PATH  UPSTREAMS (in order; +rpc = /jsonrpc, +v1 = TronGrid /v1)
+mainnet  0000000000000000...2b6653dc  /mainnet      api.trongrid.io +rpc +v1, tron-rpc.publicnode.com +rpc, api.tronstack.io
+nile     0000000000000000...cd8690dc  /nile         nile.trongrid.io +rpc +v1
+shasta   0000000000000000...94a9059e  /shasta       api.shasta.trongrid.io +rpc +v1
+(exit 0, wall 0.0s)
+
+$ trxmix info
+mainnet: block #87804081 at 2026-11-07T21:12:42Z (5s old), produced by TSMC4YzUSfySfqKuFnJbYyU3W6PBebBk2E
+  solidified #87804063 (18 blocks behind)
+  block id 00000000053bc8b1c78e85405148f50e055b524eeb0ed7f1d75553465c67b1c2
+  genesis 00000000000000001ebf88508a03865c71d452e25f4d51194196a1d22b6653dc verified (via api.trongrid.io over the mixnet)
+(exit 0, wall 6.2s)
+
+$ trxmix info --network nile
+nile: block #72515822 at 2026-11-07T21:12:51Z (4s old), produced by TVKfvNUMcZdZbxhPLb2CkQ4nyUUhvwhv1b
+  solidified #72515803 (19 blocks behind)
+  block id 00000000045280eead537310e0702f9be69febb1078efcdcd2c16bac1827ce54
+  genesis 0000000000000000d698d4192c56cb6be724a558448e2684802de4d6cd8690dc verified (via nile.trongrid.io over the mixnet)
+(exit 0, wall 7.0s)
+
+$ trxmix info --network shasta
+shasta: block #69924383 at 2026-11-07T21:12:57Z (4s old), produced by TLHJ462phNTo8LmmBiFcHV2UpUhXYF75KF
+  solidified #69924363 (20 blocks behind)
+  block id 00000000042af61f2dbea994a047536a5125457f0e997ccc8101010a0bbd4134
+  genesis 0000000000000000de1aa88295e1fcf982742f773e0419c5a9c134c994a9059e verified (via api.shasta.trongrid.io over the mixnet)
+(exit 0, wall 6.6s)
+
+$ trxmix probe
+NETWORK  UPSTREAM                 GENESIS CHECK + /wallet/getnowblock  TIME  /jsonrpc                  TIME
+mainnet  api.trongrid.io          genesis ok, block #87804095          7.5s  eth_blockNumber 87804096  0.9s
+mainnet  tron-rpc.publicnode.com  genesis ok, block #87804093          6.3s  eth_blockNumber 87804093  0.9s
+mainnet  api.tronstack.io         genesis ok, block #87804093          6.1s  -                         -
+nile     nile.trongrid.io         genesis ok, block #72515832          5.0s  eth_blockNumber 72515833  1.2s
+shasta   api.shasta.trongrid.io   genesis ok, block #69924389          5.9s  eth_blockNumber 69924390  1.2s
+5 of 5 upstreams passed the genesis check and answered through the mixnet
+(exit 0, wall 15.5s)
+
+$ trxmix balance TKHuVq1oKVruCGLvqVexFs6dawKv6fQgFs
+TKHuVq1oKVruCGLvqVexFs6dawKv6fQgFs on mainnet (via api.trongrid.io over the mixnet):
+  87575.342804 TRX
+  bandwidth 16010 left today (free 600/600), energy 489975 left
+  1925298389.251425 USDT (TRC20 TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t)
+  0 USDC (TRC20 TEkxiTehnzSmSe2XqrBj4w32RUN966rdz8)
+(exit 0, wall 7.8s)
+
+$ trxmix balance TVKfvNUMcZdZbxhPLb2CkQ4nyUUhvwhv1b --network nile
+TVKfvNUMcZdZbxhPLb2CkQ4nyUUhvwhv1b on nile (via nile.trongrid.io over the mixnet):
+  140887.290588 TRX
+  bandwidth 600 left today (free 600/600), energy 0 left
+  0 USDT (TRC20 TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf)
+(exit 0, wall 7.5s)
+
+$ trxmix balance TLHJ462phNTo8LmmBiFcHV2UpUhXYF75KF --network shasta
+TLHJ462phNTo8LmmBiFcHV2UpUhXYF75KF on shasta (via api.shasta.trongrid.io over the mixnet):
+  99944.504504 TRX
+  bandwidth 600 left today (free 600/600), energy 0 left
+(exit 0, wall 7.7s)
+
+$ trxmix call TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t totalSupply() --returns uint256
+totalSupply() on TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t -> 94234904636691893
+  energy 2256 (via api.trongrid.io over the mixnet)
+(exit 0, wall 5.0s)
+
+$ trxmix call TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t balanceOf(address) TKHuVq1oKVruCGLvqVexFs6dawKv6fQgFs --returns uint256
+balanceOf(address) on TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t -> 1925298389251425
+  energy 4062 (via api.trongrid.io over the mixnet)
+(exit 0, wall 6.2s)
+
+$ trxmix call TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf symbol() --returns string --network nile
+symbol() on TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf -> "USDT"
+  energy 1364 (via nile.trongrid.io over the mixnet)
+(exit 0, wall 5.5s)
+
+$ trxmix call TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t decimals() --returns uint8 --api https://tron-rpc.publicnode.com
+decimals() on TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t -> 6
+  energy 2207 (via tron-rpc.publicnode.com over the mixnet)
+(exit 0, wall 6.0s)
+
+
+## 3. Local gateway (`trxmix serve --listen-net nile=127.0.0.1:8091`), curl as the client
+
+$ curl -s --max-time 120 -w \nHTTP %{http_code} %{time_total}s\n -X POST http://127.0.0.1:8090/wallet/getnowblock -d {} -o /dev/null
+
+HTTP 200 6.453589s
+(exit 0, wall 6.5s)
+
+$ curl -s --max-time 120 -X POST http://127.0.0.1:8090/wallet/getaccount -d '{"address":"TKHuVq1oKVruCGLvqVexFs6dawKv6fQgFs","visible":true}' | cut -c1-160
+{"address": "TKHuVq1oKVruCGLvqVexFs6dawKv6fQgFs","balance": 87575342804,"frozen": [{"frozen_balance": 9500000000,"expire_time": 1619379054000}],"create_time": 1
+(exit 0, wall 1.0s)
+
+$ curl -s --max-time 120 -w \nHTTP %{http_code} %{time_total}s\n -H Content-Type: application/json -d {"jsonrpc":"2.0","id":1,"method":"eth_chainId","params":[]} http://127.0.0.1:8090/jsonrpc
+{"jsonrpc":"2.0","id":1,"result":"0x2b6653dc"}
+
+HTTP 200 0.820145s
+(exit 0, wall 0.8s)
+
+$ curl -s --max-time 120 -w \nHTTP %{http_code} %{time_total}s\n -H Content-Type: application/json -d [{"jsonrpc":"2.0","id":1,"method":"eth_blockNumber","params":[]},{"jsonrpc":"2.0","id":2,"method":"eth_getBalance","params":["0xa614f803b6fd780986a42c78ec9c7f77e6ded13c","latest"]}] http://127.0.0.1:8090/jsonrpc
+[{"jsonrpc":"2.0","id":1,"result":"0x53bc8dd"},{"jsonrpc":"2.0","id":2,"result":"0xff06b863e9"}]
+HTTP 200 1.075024s
+(exit 0, wall 1.1s)
+
+$ curl -s --max-time 120 -w '\nHTTP %{http_code} %{time_total}s\n' 'http://127.0.0.1:8090/v1/accounts/TKHuVq1oKVruCGLvqVexFs6dawKv6fQgFs/transactions/trc20?limit=1&only_confirmed=true' | cut -c1-160
+{"data":[{"transaction_id":"cc57e349b604f2980cfae72dd6b71432dfdce7434a9df694ae776b07460c5b48","token_info":{"symbol":"USDT","address":"TR7NHqjeKQxGTCi8q8ZY4pL8o
+HTTP 200 0.897409s
+(exit 0, wall 0.9s)
+
+$ curl -s --max-time 120 -w '\nHTTP %{http_code} %{time_total}s\n' -X POST http://127.0.0.1:8090/nile/wallet/getnowblock -d '{}' | cut -c1-120
+{"blockID":"000000000452811afee59a73da8e148c523f7ee63f0a56836b6df09bb990c2f3","block_header":{"raw_data":{"number":72515
+HTTP 200 9.225994s
+(exit 0, wall 9.2s)
+
+$ curl -s --max-time 120 -w '\nHTTP %{http_code} %{time_total}s\n' -X POST http://127.0.0.1:8091/walletsolidity/getnowblock -d '{}' | cut -c1-120
+{"blockID":"000000000452810701bf91efb0718621910cf7afae148960564ff4724ceb673d","block_header":{"raw_data":{"number":72515
+HTTP 200 1.135881s
+(exit 0, wall 1.1s)
+
+$ curl -s --max-time 120 -w '\nHTTP %{http_code} %{time_total}s\n' -X POST http://127.0.0.1:8090/shasta/wallet/getblockbynum -d '{"num":0}' | cut -c1-120
+{"blockID":"0000000000000000de1aa88295e1fcf982742f773e0419c5a9c134c994a9059e","block_header":{"raw_data":{"txTrieRoot":"
+
+HTTP 200 6.200551s
+(exit 0, wall 6.2s)
+
+$ curl -s --max-time 120 -w '\nHTTP %{http_code} %{time_total}s\n' -X POST http://127.0.0.1:8090/wallet/broadcasthex -d '{"transaction":"0a02deadbeef"}'
+{"Error":"class com.google.protobuf.InvalidProtocolBufferException : While parsing a protocol message, the input ended unexpectedly in the middle of a field.  This could mean either that the input has been truncated or that an embedded message misreported its own length."}
+
+HTTP 200 0.834377s
+(exit 0, wall 0.8s)
+
+
+## 4. Gateway guards (none of these reach the mixnet)
+
+$ curl -s --max-time 30 -w HTTP %{http_code}\n -H Host: evil.example -X POST http://127.0.0.1:8090/wallet/getnowblock -d {}
+bad Host header
+HTTP 403
+(exit 0, wall 0.0s)
+
+$ curl -s --max-time 30 -w HTTP %{http_code}\n -H Origin: https://evil.example -X POST http://127.0.0.1:8090/wallet/getnowblock -d {}
+origin not allowed (see --allow-origin)
+HTTP 403
+(exit 0, wall 0.0s)
+
+$ curl -s --max-time 30 -o /dev/null -w HTTP %{http_code}\n -X OPTIONS -H Origin: https://evil.example -H Access-Control-Request-Method: POST http://127.0.0.1:8090/wallet/getnowblock
+HTTP 403
+(exit 0, wall 0.0s)
+
+$ curl -s --max-time 120 -o /dev/null -w HTTP %{http_code} %{time_total}s\n -H Origin: chrome-extension://ibnejdfjmmkpcnlpebklmnkoeoihofec -X POST http://127.0.0.1:8090/wallet/getnowblock -d {}
+HTTP 200 1.302618s
+(exit 0, wall 1.3s)
+
+$ curl -s --max-time 30 -o /dev/null -w HTTP %{http_code}\n --path-as-is http://127.0.0.1:8090/nile/wallet/../../elsewhere
+HTTP 404
+(exit 0, wall 0.0s)
+
+$ curl -s --max-time 30 -o /dev/null -w HTTP %{http_code}\n http://127.0.0.1:8090/nile/wallet/%2e%2e/%2e%2e/elsewhere
+HTTP 404
+(exit 0, wall 0.0s)
+
+$ curl -s --max-time 30 -o /dev/null -w HTTP %{http_code}\n http://127.0.0.1:8090/robots.txt
+HTTP 404
+(exit 0, wall 0.0s)
+
+$ curl -s --max-time 30 -o /dev/null -w HTTP %{http_code}\n http://127.0.0.1:8090/jsonrpc/extra
+HTTP 404
+(exit 0, wall 0.0s)
+
+$ curl -s --max-time 30 -w HTTP %{http_code}\n -H Connection: Upgrade -H Upgrade: websocket http://127.0.0.1:8090/wallet/getnowblock
+the TRON HTTP API has no websocket
+HTTP 400
+(exit 0, wall 0.0s)
+
+$ curl -s --max-time 30 -w HTTP %{http_code}\n -X POST -H Content-Type: multipart/form-data; boundary=x --data-binary x http://127.0.0.1:8090/wallet/getnowblock
+POST body must be JSON (application/json, text/plain or curl's default form type)
+HTTP 415
+(exit 0, wall 0.0s)
+
+$ curl -s --max-time 30 -w HTTP %{http_code}\n -X POST http://127.0.0.1:8090/tronstack-typo/wallet/getnowblock -d {}
+trxmix gateway: the TRON HTTP API over the Nym mixnet.
+  /wallet/... /walletsolidity/... /jsonrpc /v1/...   mainnet (the default network)
+  /<network>/...                                     that network, e.g. /nile/wallet/getnowblock
+networks:
+  mainnet    upstreams 3
+  nile       upstreams 1
+  shasta     upstreams 1
+requests so far: 9, failed: 0
+HTTP 404
+(exit 0, wall 0.0s)
+
+
+## 5. Broadcast: unsigned refused locally, forged signature rejected by the node, edited JSON refused, junk refused
+
+$ curl -s --max-time 120 -X POST http://127.0.0.1:8090/nile/wallet/createtransaction -d '{"owner_address":"TVKfvNUMcZdZbxhPLb2CkQ4nyUUhvwhv1b","to_address":"TLHJ462phNTo8LmmBiFcHV2UpUhXYF75KF","amount":1,"visible":true}' > work/tx/unsigned.json; head -c 200 work/tx/unsigned.json; echo
+{"raw_data":{"ref_block_bytes":"8112","ref_block_hash":"d04a874da456988d","expiration":1794086193000,"contract":[{"parameter":{"value":{"owner_address":"TVKfvNUMcZdZbxhPLb2CkQ4nyUUhvwhv1b","to_address
+(exit 0, wall 1.4s)
+
+$ trxmix broadcast work/tx/unsigned.json --network nile
+trxmix: transaction 9dfc5606de9d359a1e49b162c2cd7dca918a8d681967f2412d2d3489758d9520 is not signed: trxmix only forwards signed transactions (it holds no keys)
+(exit 1, wall 0.0s)
+
+$ trxmix broadcast work/tx/zero-sig.json --network nile
+rejected by the node: SIGERROR: Validate signature error: java.lang.IllegalArgumentException: Invalid point compression
+  txid 9dfc5606de9d359a1e49b162c2cd7dca918a8d681967f2412d2d3489758d9520 (TransferContract) via nile.trongrid.io over the mixnet
+(exit 1, wall 5.5s)
+
+$ trxmix broadcast work/tx/edited.json --network nile
+trxmix: txID 9dfc5606de9d359a1e49b162c2cd7dca918a8d681967f2412d2d3489758d9520 is not sha256(raw_data_hex) = 6c53591b22291819b8962a667f9fb086241ae4e3a5604063dce5bb8451182edf: the JSON was edited after it was built
+(exit 1, wall 0.0s)
+
+$ trxmix broadcast 0a02deadbeef
+trxmix: not a TRON transaction: bad field key
+(exit 1, wall 0.0s)
+
+
+## 6. No clearnet fallback: mixnet client stopped, then started again
+
+$ trxmix nym stop
+stopped
+(exit 0, wall 0.0s)
+
+$ trxmix info
+trxmix: api.trongrid.io: no SOCKS5 proxy (nym-socks5-client) listening; refusing to fall back to a direct connection (127.0.0.1:1090: dial tcp 127.0.0.1:1090: connect: connection refused)
+(exit 1, wall 0.0s)
+
+$ trxmix info --dns exit --network nile
+trxmix: nile.trongrid.io: no SOCKS5 proxy (nym-socks5-client) listening; refusing to fall back to a direct connection (127.0.0.1:1090: dial tcp 127.0.0.1:1090: connect: connection refused)
+(exit 1, wall 0.0s)
+
+$ curl -s --max-time 60 -w \nHTTP %{http_code} %{time_total}s\n -X POST http://127.0.0.1:8090/wallet/getnowblock -d {}
+{"Error":"trxmix: all upstreams failed over the mixnet (no clearnet fallback): api.trongrid.io: no SOCKS5 proxy (nym-socks5-client) listening; refusing to fall back to a direct connection (127.0.0.1:1090: dial tcp 127.0.0.1:1090: connect: connection refused)","reason":"MixnetUnavailable"}
+HTTP 502 0.000501s
+(exit 0, wall 0.0s)
+
+$ trxmix nym start
+id                 trxmix
+pid                367025
+socks5             127.0.0.1:1090
+provider           33ChAyRf35cDosrcyTXTySUaaLXhNHu6bcEinBLfVikj.FpvpDVRCss9XB2jSVFJA1JNfyeavqCXKSjy8PZwYaG1r@HBhdKYaPmzBG6SNLnn1JJFaWLG9DCLugKPhv8WM6T4cN
+anonymous_replies  true
+client_address     Cxu6grnqVtfi4Twog3bSDRaBLHiUmQSrBhZGqEMnyoUB.9kZ82eSuUVwieiV2jQR8aX3pZyGSTuwLQ68R6UjhhxUr@H7AgrYp668hQbLEz3s7TZK1MbhD5qCW49nYJMzD7LNNR
+gateway            H7AgrYp668hQbLEz3s7TZK1MbhD5qCW49nYJMzD7LNNR
+log                $XDG_STATE_HOME/trxmix/trxmix.log
+(exit 0, wall 2.0s)
+
+$ trxmix info --network shasta
+shasta: block #69924475 at 2026-11-07T21:17:33Z (2s old), produced by TXyZjVcYurrbE43b2MfMtN34uA3tJL85zy
+  solidified #69924453 (22 blocks behind)
+  block id 00000000042af67bcc278b06a2c7326b38a2f4e5327fa20a64c1e711dd05b687
+  genesis 0000000000000000de1aa88295e1fcf982742f773e0419c5a9c134c994a9059e verified (via api.shasta.trongrid.io over the mixnet)
+(exit 0, wall 6.6s)
+
+$ curl -s --max-time 120 -w '\nHTTP %{http_code} %{time_total}s\n' -X POST http://127.0.0.1:8090/wallet/getnowblock -d '{}' | cut -c1-100
+{"blockID":"00000000053bc912fccd00b11f57d32f48ba4457c5273e308da66a5764d6d867","block_header":{"raw_d
+HTTP 200 4.534114s
+(exit 0, wall 4.5s)
+
+
+## 7. TronWeb 6.5.1, unmodified, through the gateway (see live-tronweb.txt)
+
+See examples/live-tronweb.txt and examples/live-gateway.log.

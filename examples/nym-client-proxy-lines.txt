@@ -1,0 +1,12 @@
+# nym-socks5-client's own log (client id trxmix) after its restart in section 6: every SOCKS5 stream it opened into the
+# mixnet for the shasta info, a gateway request, the read-only TronWeb rerun and `trxmix ip`. 7 streams in all: the
+# gateway keeps its upstream streams alive, so the 9 TronWeb calls opened only 2 new ones (Nile, Shasta) and reused
+# the open mainnet stream.
+# 1.1.1.1 = DoH lookups over the mixnet; the others are TronGrid's (and api.ipify.org's) addresses from those lookups.
+2026-11-07T21:17:29.609131Z  INFO common/socks5-client-core/src/socks/client.rs:499: Starting proxy for 1.1.1.1:443 (id: 147804910290777377)
+2026-11-07T21:17:31.537212Z  INFO common/socks5-client-core/src/socks/client.rs:499: Starting proxy for 35.82.254.24:443 (id: 17552228920909891382)
+2026-11-07T21:17:36.180940Z  INFO common/socks5-client-core/src/socks/client.rs:499: Starting proxy for 3.121.88.46:443 (id: 11644478756683096488)
+2026-11-07T21:18:04.337670Z  INFO common/socks5-client-core/src/socks/client.rs:499: Starting proxy for 52.26.45.38:443 (id: 3663786185296969852)
+2026-11-07T21:18:06.784669Z  INFO common/socks5-client-core/src/socks/client.rs:499: Starting proxy for 35.82.254.24:443 (id: 14393071648440789499)
+2026-11-07T21:18:09.439951Z  INFO common/socks5-client-core/src/socks/client.rs:499: Starting proxy for 1.1.1.1:443 (id: 1762134278234650909)
+2026-11-07T21:18:11.391396Z  INFO common/socks5-client-core/src/socks/client.rs:499: Starting proxy for 104.26.13.205:443 (id: 12312024953502495866)

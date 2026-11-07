@@ -1,0 +1,44 @@
+# TronWeb 6.5.1 (unmodified) against `trxmix serve`, Node v26.13.0, 2026-11-07 21:16-21:18 UTC.
+# no-bypass-hook.cjs logs every TCP connect and DNS lookup of the Node process and flags any non-loopback one.
+# Control run first: the hook flags a direct connect (net, https and fetch) to 192.0.2.1/192.0.2.2 as NON-LOOPBACK.
+# The Nile key is a fresh one made for this run (never funded, kept out of the repo); only its address is shown.
+
+$ node --require ./no-bypass-hook.cjs -e "fetch('http://192.0.2.1/'); https.get('https://192.0.2.2/')"   # control
+[hook] NON-LOOPBACK connect 192.0.2.1:80
+[hook] NON-LOOPBACK connect 192.0.2.2:443
+[hook] 2 connects/lookups, distinct: connect 192.0.2.1:80, connect 192.0.2.2:443
+[hook] FAIL: 2 non-loopback destination(s)
+
+$ TRXMIX_TEST_KEYFILE=fresh-nile-key.json node --require ./no-bypass-hook.cjs tronweb-client.mjs http://127.0.0.1:8090
+TronWeb 6.5.1 fullHost = http://127.0.0.1:8090 (mainnet), http://127.0.0.1:8090/nile, http://127.0.0.1:8090/shasta
+mainnet trx.getCurrentBlock: #87804164  (2.3 s)
+mainnet trx.getBalance TKHuVq1oKVruCGLvqVexFs6dawKv6fQgFs: 87575.342804 TRX  (1.0 s)
+mainnet trx.getAccountResources: energy limit 489975  (0.9 s)
+mainnet contract(USDT).name(): Tether USD  (0.9 s)
+mainnet contract(USDT).balanceOf(TKHuVq1oKVruCGLvqVexFs6dawKv6fQgFs): 1925298389251425 (6 decimals)  (0.8 s)
+mainnet contract().at(USDT) (ABI fetched from the node): 46 ABI entries  (1.0 s)
+mainnet trx.getChainParameters: 81 parameters  (0.8 s)
+nile trx.getCurrentBlock: #72515905  (2.8 s)
+shasta trx.getCurrentBlock: #69924465  (2.5 s)
+nile trx.getAccount TMJcBWuyuzTrTkhCDuHr9xk4xjpJVQvRQy (fresh key): {}  (1.3 s)
+nile transactionBuilder.sendTrx + trx.sign (built and signed locally, 1 sun): txID 7f8946087a657415348c31582dc5b49cade0d805e8b9129fe2ae7f322156a5cb, 1 signature  (1.1 s)
+nile trx.sendRawTransaction (signed): result=false code=CONTRACT_VALIDATE_ERROR message="Contract validate error : account [TMJcBWuyuzTrTkhCDuHr9xk4xjpJVQvRQy] does not exist"  (1.0 s)
+[hook] 1 connects/lookups, distinct: connect 127.0.0.1:8090
+[hook] OK: every connection went to loopback (the trxmix gateway)
+(exit 0)
+
+# Read-only rerun after the no-fallback test (mixnet client restarted):
+$ node --require ./no-bypass-hook.cjs tronweb-client.mjs http://127.0.0.1:8090
+TronWeb 6.5.1 fullHost = http://127.0.0.1:8090 (mainnet), http://127.0.0.1:8090/nile, http://127.0.0.1:8090/shasta
+mainnet trx.getCurrentBlock: #87804185  (0.9 s)
+mainnet trx.getBalance TKHuVq1oKVruCGLvqVexFs6dawKv6fQgFs: 87575.342804 TRX  (1.0 s)
+mainnet trx.getAccountResources: energy limit 489975  (0.8 s)
+mainnet contract(USDT).name(): Tether USD  (0.9 s)
+mainnet contract(USDT).balanceOf(TKHuVq1oKVruCGLvqVexFs6dawKv6fQgFs): 1925298389251425 (6 decimals)  (0.9 s)
+mainnet contract().at(USDT) (ABI fetched from the node): 46 ABI entries  (0.8 s)
+mainnet trx.getChainParameters: 81 parameters  (0.9 s)
+nile trx.getCurrentBlock: #72515926  (2.4 s)
+shasta trx.getCurrentBlock: #69924484  (2.6 s)
+[hook] 1 connects/lookups, distinct: connect 127.0.0.1:8090
+[hook] OK: every connection went to loopback (the trxmix gateway)
+(exit 0)

@@ -1,0 +1,38 @@
+# `TZ=UTC trxmix serve --listen-net nile=127.0.0.1:8091`, 2026-11-07. One line per request: network, method or route
+# (never params), upstream, status, size, time. The FAILED line is the no-fallback test with the mixnet client stopped.
+21:14:38 trxmix gateway on http://127.0.0.1:8090  (root = mainnet; SOCKS5 127.0.0.1:1090; TronGrid API key: none (keyless: TronGrid's per-IP limits apply to the exit IP, other upstreams take over on 429))
+21:14:38 trxmix gateway on http://127.0.0.1:8091  (root = nile; SOCKS5 127.0.0.1:1090; TronGrid API key: none (keyless: TronGrid's per-IP limits apply to the exit IP, other upstreams take over on 429))
+21:14:53 mainnet POST /wallet/getnowblock -> mixnet -> api.trongrid.io HTTP 200, 211113 bytes in 6.5s
+21:14:54 mainnet POST /wallet/getaccount -> mixnet -> api.trongrid.io HTTP 200, 13714 bytes in 1.0s
+21:14:55 mainnet POST /jsonrpc eth_chainId -> mixnet -> api.trongrid.io HTTP 200, 47 bytes in 0.8s
+21:14:56 mainnet POST /jsonrpc batch of 2 (eth_blockNumber x1, eth_getBalance x1) -> mixnet -> api.trongrid.io HTTP 200, 96 bytes in 1.1s
+21:14:57 mainnet GET /v1/accounts/*/transactions/trc20 -> mixnet -> api.trongrid.io HTTP 200, 1035 bytes in 0.9s
+21:15:06 nile POST /wallet/getnowblock -> mixnet -> nile.trongrid.io HTTP 200, 8899 bytes in 9.2s
+21:15:07 nile POST /walletsolidity/getnowblock -> mixnet -> nile.trongrid.io HTTP 200, 12572 bytes in 1.1s
+21:15:14 shasta POST /wallet/getblockbynum -> mixnet -> api.shasta.trongrid.io HTTP 200, 6995 bytes in 6.2s
+21:15:15 mainnet POST /wallet/broadcasthex -> mixnet -> api.trongrid.io HTTP 200, 274 bytes in 0.8s
+21:15:26 mainnet POST /wallet/getnowblock -> mixnet -> api.trongrid.io HTTP 200, 247418 bytes in 1.3s
+21:15:35 nile POST /wallet/createtransaction -> mixnet -> nile.trongrid.io HTTP 200, 736 bytes in 1.4s
+21:16:56 mainnet GET /wallet/getnowblock -> mixnet -> api.trongrid.io HTTP 200, 238293 bytes in 2.3s
+21:16:57 mainnet POST /walletsolidity/getaccount -> mixnet -> api.trongrid.io HTTP 200, 13738 bytes in 1.0s
+21:16:58 mainnet POST /wallet/getaccountresource -> mixnet -> api.trongrid.io HTTP 200, 11675 bytes in 0.9s
+21:16:59 mainnet POST /wallet/triggerconstantcontract -> mixnet -> api.trongrid.io HTTP 200, 1098 bytes in 0.9s
+21:16:59 mainnet POST /wallet/triggerconstantcontract -> mixnet -> api.trongrid.io HTTP 200, 1102 bytes in 0.8s
+21:17:00 mainnet GET /wallet/getcontract -> mixnet -> api.trongrid.io HTTP 200, 37422 bytes in 1.0s
+21:17:01 mainnet POST /wallet/getchainparameters -> mixnet -> api.trongrid.io HTTP 200, 3747 bytes in 0.8s
+21:17:04 nile GET /wallet/getnowblock -> mixnet -> nile.trongrid.io HTTP 200, 4313 bytes in 2.8s
+21:17:06 shasta GET /wallet/getnowblock -> mixnet -> api.shasta.trongrid.io HTTP 200, 541 bytes in 2.5s
+21:17:08 nile POST /walletsolidity/getaccount -> mixnet -> nile.trongrid.io HTTP 200, 3 bytes in 1.3s
+21:17:09 nile POST /wallet/getblock -> mixnet -> nile.trongrid.io HTTP 200, 542 bytes in 1.1s
+21:17:10 nile POST /wallet/broadcasttransaction -> mixnet -> nile.trongrid.io HTTP 200, 292 bytes in 1.0s
+21:17:16 mainnet POST /wallet/getnowblock FAILED after 0.0s: api.trongrid.io: no SOCKS5 proxy (nym-socks5-client) listening; refusing to fall back to a direct connection (127.0.0.1:1090: dial tcp 127.0.0.1:1090: connect: connection refused)
+21:17:40 mainnet POST /wallet/getnowblock -> mixnet -> api.trongrid.io HTTP 200, 206612 bytes in 4.5s
+21:17:58 mainnet GET /wallet/getnowblock -> mixnet -> api.trongrid.io HTTP 200, 211149 bytes in 0.9s
+21:17:59 mainnet POST /walletsolidity/getaccount -> mixnet -> api.trongrid.io HTTP 200, 13738 bytes in 1.0s
+21:18:00 mainnet POST /wallet/getaccountresource -> mixnet -> api.trongrid.io HTTP 200, 11675 bytes in 0.8s
+21:18:01 mainnet POST /wallet/triggerconstantcontract -> mixnet -> api.trongrid.io HTTP 200, 1098 bytes in 0.9s
+21:18:02 mainnet POST /wallet/triggerconstantcontract -> mixnet -> api.trongrid.io HTTP 200, 1102 bytes in 0.9s
+21:18:03 mainnet GET /wallet/getcontract -> mixnet -> api.trongrid.io HTTP 200, 37422 bytes in 0.8s
+21:18:04 mainnet POST /wallet/getchainparameters -> mixnet -> api.trongrid.io HTTP 200, 3747 bytes in 0.9s
+21:18:06 nile GET /wallet/getnowblock -> mixnet -> nile.trongrid.io HTTP 200, 7992 bytes in 2.4s
+21:18:09 shasta GET /wallet/getnowblock -> mixnet -> api.shasta.trongrid.io HTTP 200, 541 bytes in 2.6s
